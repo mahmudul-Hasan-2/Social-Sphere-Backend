@@ -1,5 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "./utils/auth";
 
 const app: Application = express();
 
@@ -13,5 +15,6 @@ app.get("/", (req: Request, res: Response) => {
     message: "SocialSphere API is up and running smoothly!",
   });
 });
+app.all("/api/auth/*", toNodeHandler(auth));
 
 export default app;
