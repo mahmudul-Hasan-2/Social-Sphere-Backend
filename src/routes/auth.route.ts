@@ -4,7 +4,7 @@ import { auth } from "../utils/auth";
 
 const router = Router();
 
-// Better Auth সব রুট (register, login, session, google-oauth etc.) স্বয়ংক্রিয়ভাবে হ্যান্ডেল করে
-router.all("/*", toNodeHandler(auth));
+// Express 5 এর জন্য রেগুলার এক্সপ্রেশন ওয়াইল্ডকার্ড ব্যবহার করা হলো
+router.all(/(.*)/, toNodeHandler(auth));
 
 export default router;

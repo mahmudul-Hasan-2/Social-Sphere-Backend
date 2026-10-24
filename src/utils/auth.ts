@@ -10,7 +10,7 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
-    minPasswordLength: 6, // আপনার পাসওয়ার্ড রুল অনুযায়ী অন্তত ৬ অক্ষর
+    minPasswordLength: 6,
   },
   socialProviders: {
     google: {
@@ -18,8 +18,9 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
     },
   },
+  // এখানে ফলব্যাক স্ট্রিং বা নন-নাল (!) ব্যবহার করুন যাতে undefined না থাকে
+  trustedOrigins: [process.env.CLIENT_URL || "http://localhost:3000"],
   advanced: {
     cookiePrefix: "social-sphere",
   },
-  trustedOrigins: `${process.env.CLIENT_URL}`,
 });

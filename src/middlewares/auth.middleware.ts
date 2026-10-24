@@ -1,30 +1,39 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import { fromNodeHeaders } from "better-auth/node";
+import { auth } from "../utils/auth";
 
-interface AuthRequest extends Request {
+export interface AuthRequest extends Request {
   user?: any;
+  session?: any;
 }
 
-export const authenticate = (
+export const authenticate = async (
   req: AuthRequest,
   res: Response,
   next: NextFunction,
 ) => {
-  const token = req.headers.authorization?.split(" ")[1];
-
-  if (!token) {
-    return res
-      .status(401)
-      .json({ success: false, message: "Unauthorized access!" });
-  }
-
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "secret_key");
-    req.user = decoded;
+    // Better Auth থেকে রিকোয়েস্ট হেডার্স ও কুকি ভ্যালিড করা
+    const session = await auth.api.getSession({
+      headers: fromNodeHeaders(req.headers),
+    });
+
+    if (!session) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized! Please log in first.",
+      });
+    }
+
+    // ইউজার ও সেশন ডেটা রিকোয়েস্টে এটাচ করে দেওয়া
+    req.user = session.user;
+    req.session = session.session;
+
     next();
   } catch (error) {
-    return res
-      .status(403)
-      .json({ success: false, message: "Invalid or expired token!" });
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error during authentication",
+    });
   }
 };
