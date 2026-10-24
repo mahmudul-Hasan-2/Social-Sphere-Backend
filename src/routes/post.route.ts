@@ -4,8 +4,8 @@ import {
   getAllPosts,
   getTrendingPosts,
   getPostById,
-} from "../controllers/post.controller";
-import { authenticate } from "../middlewares/auth.middleware";
+} from "../controllers/post.controller.js";
+import { authenticate } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 

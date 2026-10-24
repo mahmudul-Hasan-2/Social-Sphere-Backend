@@ -3,12 +3,12 @@ dotenv.config();
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 
-import authRoutes from "./routes/auth.route";
-import postRoutes from "./routes/post.route";
-import commentRoutes from "./routes/comment.route";
-import reactionRoutes from "./routes/reaction.route";
+import authRoutes from "./routes/auth.route.js";
+import postRoutes from "./routes/post.route.js";
+import commentRoutes from "./routes/comment.route.js";
+import reactionRoutes from "./routes/reaction.route.js";
 
-import { globalErrorHandler } from "./middlewares/error.middleware";
+import { globalErrorHandler } from "./middlewares/error.middleware.js";
 
 const app: Application = express();
 

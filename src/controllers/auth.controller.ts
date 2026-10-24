@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { catchAsync } from "../utils/catchAsync";
+import { catchAsync } from "../utils/catchAsync.js";
 import {
   registerUserService,
   loginUserService,
-} from "../services/auth.service";
+} from "../services/auth.service.js";
 
 export const registerUser = catchAsync(async (req: Request, res: Response) => {
   const result = await registerUserService(req.body);

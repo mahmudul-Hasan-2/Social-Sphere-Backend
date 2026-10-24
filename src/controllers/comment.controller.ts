@@ -1,6 +1,6 @@
 import { Response } from "express";
-import prisma from "../config/prisma";
-import { AuthRequest } from "../middlewares/auth.middleware";
+import prisma from "../config/prisma.js";
+import { AuthRequest } from "../middlewares/auth.middleware.js";
 
 // কমেন্ট তৈরি করা
 export const createComment = async (req: AuthRequest, res: Response) => {
@@ -17,7 +17,7 @@ export const createComment = async (req: AuthRequest, res: Response) => {
 
     const comment = await prisma.comment.create({
       data: {
-        text: content, // Prisma স্কিমা অনুযায়ী content কে text ফিল্ডে ম্যাপ করা হলো
+        text: content, // Prisma স্কিমা অনুযায়ী content কে text ফিল্ডে ম্যাপ করা হলো
         postId,
         authorId: userId,
         parentId: parentId || null,
@@ -43,12 +43,15 @@ export const createComment = async (req: AuthRequest, res: Response) => {
 };
 
 // কোনো নির্দিষ্ট পোস্টের সমস্ত কমেন্ট ফেচ করা
-export const getCommentsByPost = async (req: AuthRequest, res: Response) => {
+export const getCommentsByPostId = async (req: AuthRequest, res: Response) => {
   try {
-    const { postId } = req.params;
+    const postId = req.params.postId as string;
 
     const comments = await prisma.comment.findMany({
-      where: { postId, parentId: null },
+      where: {
+        postId: postId,
+        parentId: null, // শীর্ষ স্তরের কমেন্টগুলো
+      },
       include: {
         author: {
           select: { name: true, image: true },
@@ -56,33 +59,32 @@ export const getCommentsByPost = async (req: AuthRequest, res: Response) => {
         replies: {
           include: {
             author: {
-              select: { name: true, image: true },
+              select: { name: true, image: true }, // রিপ্লাইয়ের সাথে লেখকের তথ্য
             },
           },
-          orderBy: { createdAt: "asc" }, // রিপ্লাইগুলো পুরানো থেকে নতুন ক্রমানুসারে সাজানো ভালো
         },
       },
-      orderBy: { createdAt: "desc" },
     });
 
-    // Prisma-র `text` ফিল্ডকে ফ্রন্টএন্ডের সুবিধার্থে `content`-এ রূপান্তর করে পাঠানো (অপশনাল কিন্তু কার্যকরী)
-    const formattedComments = comments.map((comment) => ({
+    const formattedComments = comments.map((comment: any) => ({
       ...comment,
-      content: comment.text, // ফ্রন্টএন্ড যাতে `comment.content` দিয়ে পড়তে পারে
-      replies: comment.replies.map((reply) => ({
-        ...reply,
-        content: reply.text,
-      })),
+      replies: comment.replies
+        ? comment.replies.map((reply: any) => ({
+            id: reply.id,
+            text: reply.text,
+            createdAt: reply.createdAt,
+            author: reply.author,
+          }))
+        : [],
     }));
 
     return res.status(200).json({
       success: true,
       data: formattedComments,
     });
-  } catch (error: any) {
-    return res.status(500).json({
-      success: false,
-      message: error.message || "Failed to fetch comments",
-    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, message: "Error fetching comments" });
   }
 };

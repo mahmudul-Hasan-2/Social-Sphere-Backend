@@ -1,4 +1,4 @@
-import prisma from "../config/prisma";
+import prisma from "../config/prisma.js";
 
 export const createPostService = async (userId: string, payload: any) => {
   const { title, content, mediaUrl, category, tags } = payload;

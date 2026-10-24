@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { catchAsync } from "../utils/catchAsync";
+import { catchAsync } from "../utils/catchAsync.js";
 import {
   createPostService,
   getAllPostsService,
   getTrendingPostsService,
   getPostByIdService,
-} from "../services/post.service";
+} from "../services/post.service.js";
 
 export const createPost = catchAsync(async (req: any, res: Response) => {
   const userId = req.user?.id; // Auth middleware theke ashbe
@@ -38,7 +38,7 @@ export const getTrendingPosts = catchAsync(
 );
 
 export const getPostById = catchAsync(async (req: Request, res: Response) => {
-  const result = await getPostByIdService(req?.params?.id);
+  const result = await getPostByIdService(req?.params?.id as string);
   res.status(200).json({
     success: true,
     message: "Post details fetched successfully!",

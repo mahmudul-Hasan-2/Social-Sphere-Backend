@@ -1,4 +1,4 @@
-import prisma from "../config/prisma";
+import prisma from "../config/prisma.js";
 import jwt from "jsonwebtoken";
 
 export const registerUserService = async (payload: any) => {

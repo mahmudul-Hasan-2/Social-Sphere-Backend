@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { fromNodeHeaders } from "better-auth/node";
-import { auth } from "../utils/auth";
+import { auth } from "../utils/auth.js";
 
 export interface AuthRequest extends Request {
   user?: any;

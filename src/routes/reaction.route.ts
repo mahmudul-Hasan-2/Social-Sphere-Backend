@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { toggleReaction } from "../controllers/reaction.controller";
-import { authenticate } from "../middlewares/auth.middleware";
+import { toggleReaction } from "../controllers/reaction.controller.js";
+import { authenticate } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
